@@ -135,3 +135,7 @@ out/
 
 # File-based project format
 *.iws
+
+# Don't commit sensitive user/channel data
+config.ini
+*.session
