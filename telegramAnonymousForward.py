@@ -7,7 +7,7 @@ from telethon.tl.types import (
 )
 
 # Reading Configs
-config = configparser.ConfigParser()
+config = configparser.RawConfigParser()
 config.read("config.ini")
 
 # Setting Telegram configuration values
@@ -27,7 +27,7 @@ client.start()
 print("Client Created")
 
 
-async def main():
+async def authorize_client():
     # Ensure you're authorized
     isAuthorized = await client.is_user_authorized()
     if not isAuthorized:
@@ -48,13 +48,24 @@ async def main():
     destination_channel = await client.get_input_entity(destination_entity)
     print(utils.get_display_name(source_channel))
 
-    offset_id = 1778
+    return source_channel, destination_channel
+
+
+async def main():
+    source_channel, destination_channel = await authorize_client()
+    offset_id = 0
 
     while True:
-        async for message in client.iter_messages(source_channel, reverse=True, wait_time=5, min_id=offset_id):
-            if message.message is not None and message.media is None:
-                await client.send_message(destination_channel, message.message)
+        async for message in client.iter_messages(destination_channel, reverse=True, wait_time=5, min_id=offset_id):
+            try:
+                # await client.delete_messages(destination_channel, message.id, revoke=True)
+                await client.send_message(destination_channel, message)
+            except Exception:
+                pass
             offset_id = message.id
+        config.set("Telegram", "offset_id", str(offset_id))
+        with open('config.ini', 'w') as configFile:
+            config.write(configFile)
 
 
 with client:
