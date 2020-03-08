@@ -56,7 +56,7 @@ async def main():
     offset_id = 0
 
     while True:
-        async for message in client.iter_messages(destination_channel, reverse=True, wait_time=5, min_id=offset_id):
+        async for message in client.iter_messages(source_channel, reverse=True, wait_time=5, min_id=offset_id):
             try:
                 # await client.delete_messages(destination_channel, message.id, revoke=True)
                 await client.send_message(destination_channel, message)
