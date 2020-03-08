@@ -137,5 +137,5 @@ out/
 *.iws
 
 # Don't commit sensitive user/channel data
-config.ini
+*.ini
 *.session
